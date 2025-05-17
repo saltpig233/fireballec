@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EaseCation 火焰弹教学网站</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+
+    <!-- Tailwind 配置 -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#E53E3E', // 火焰红色作为主色调
+                        secondary: '#3182CE', // 辅助蓝色
+                        accent: '#ED8936', // 强调橙色
+                        dark: '#1A202C',
+                        light: '#F7FAFC'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                },
+            }
+        }
+    </script>
+
+    <style type="text/tailwindcss">
+        @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .sidebar-link {
+        @apply py-1 px-4 rounded-lg transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-white;
+      }
+      .sidebar-link.active {
+        @apply bg-primary/10 text-primary font-medium py-1;
+      }
+      .article-content {
+        @apply hidden opacity-0 transition-all duration-300;
+      }
+      .article-content.active {
+        @apply block opacity-100;
+      }
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+      .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .dark .dark\:bg-dark {
+        background-color: #1A202C;
+      }
+      .dark .dark\:text-light {
+        color: #F7FAFC;
+      }
+      .dark .dark\:border-gray-700 {
+        border-color: #4A5568;
+      }
+    }
+  </style>
+</head>
+
+<body class="font-inter bg-gray-50 text-gray-800 dark:bg-dark dark:text-light transition-colors duration-300">
+    <!-- App Bar -->
+    <header
+        class="bg-white dark:bg-dark shadow-md fixed top-0 left-0 right-0 z-30 transition-all duration-300 dark:border-b dark:border-gray-700">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo 和标题 -->
+                <div class="flex items-center">
+                    <button id="menu-toggle" class="mr-3 text-gray-500 hover:text-primary md:hidden">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                    <a href="#" class="flex items-center">
+                        <img src="logo.png" alt="EaseCation Logo" class="h-10 w-auto rounded-lg">
+                        <span class="ml-2 text-xl font-bold text-primary">EaseCation 火焰弹教学网站</span>
+                    </a>
+                </div>
+
+                <!-- 搜索框 -->
+                <div class="hidden md:block flex-1 max-w-md mx-8">
+                    <div class="relative">
+                        <input type="text" placeholder="搜索教程..."
+                            class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary dark:text-light">
+                        <i
+                            class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                </div>
+
+                <!-- 用户操作区 -->
+                <div class="flex items-center space-x-4">
+                    <button id="theme-toggle" class="text-gray-500 hover:text-primary transition-colors">
+                        <i class="fa-solid fa-moon text-xl"></i>
+                    </button>
+                    <div class="relative">
+                        <button class="flex items-center space-x-2">
+                            <img src="https://picsum.photos/id/1005/40/40" alt="用户头像"
+                                class="h-8 w-8 rounded-full object-cover">
+                            <span class="hidden md:inline text-sm font-medium">游客</span>
+                            <i class="fa-solid fa-chevron-down text-xs text-gray-500"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex min-h-screen pt-16">
+        <!-- 侧边栏 -->
+        <aside id="sidebar"
+            class="w-64 bg-white dark:bg-dark shadow-lg fixed h-full z-20 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out overflow-y-auto scrollbar-hide dark:border-r dark:border-gray-700">
+            <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                <h2 class="text-lg font-semibold text-gray-800 dark:text-light">教程目录</h2>
+            </div>
+
+            <nav class="p-2">
+                <ul class="space-y-1">
+                    <li>
+                        <a href="#article1" class="sidebar-link active" data-article="article1">
+                            <i class="fa-solid fa-file-text mr-2"></i>网站介绍
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#article2" class="sidebar-link" data-article="article2">
+                            <i class="fa-solid fa-file-text mr-2"></i>EC钻石绿宝石时间表
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#article3" class="sidebar-link" data-article="article3">
+                            <i class="fa-solid fa-file-text mr-2"></i>EC伤害表(未完成)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#article4" class="sidebar-link" data-article="article4">
+                            <i class="fa-solid fa-file-text mr-2"></i>EC守家论(未完成)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#article5" class="sidebar-link" data-article="article5">
+                            <i class="fa-solid fa-file-text mr-2"></i>我不知道
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="mt-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <h3 class="text-sm font-medium text-gray-900 dark:text-light mb-2">相关资源</h3>
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="#"
+                                class="text-sm text-gray-600 dark:text-gray-300 hover:text-primary flex items-center">
+                                <i class="fa-solid fa-download mr-2"></i>下载示例项目
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="flex-1 md:ml-64 transition-all duration-300">
+            <div class="container mx-auto px-4 py-8">
+                <!-- 面包屑导航 -->
+                <div class="flex items-center mb-6 text-sm">
+                    <a href="#" class="text-gray-500 hover:text-primary">首页</a>
+                    <i class="fa-solid fa-chevron-right mx-2 text-gray-400 text-xs"></i>
+                    <span class="text-gray-700 dark:text-gray-300">教程文档</span>
+                </div>
+
+                <!-- 文章内容区 -->
+                <div id="article-container" class="space-y-6">
+                    <!-- 文章1：火焰弹介绍 -->
+                    <article id="article1"
+                        class="article-content active bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transform transition-all hover:shadow-lg">
+                        <div class="flex items-center mb-4">
+                            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-4">
+                                <i class="fa-solid fa-fire text-primary"></i>
+                            </div>
+                            <h2 class="text-2xl font-bold text-gray-800 dark:text-light">网站介绍</h2>
+                        </div>
+                        <div class="prose max-w-none">
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                欢迎来到此网站，我们致力于为您提供最优质的EC教学资源。<br>
+                                我们的目标是帮助您更好地理解和应用EC技术，从而提升您的游戏体验。<br>
+                                无论您是初学者还是有经验的玩家，我们都有适合您的教程和资源。<br>
+                            </p>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                本网站的作者是路小雨，文档的提供者是火焰弹233，感谢他们的贡献
+                            </p>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                火焰弹粉丝交流群 : <a href="https://qm.qq.com/q/KjcioTHf2I" class="text-blue-500 underline">
+                                    213380482 </a>
+                            </p>
+                        </div>
+                    </article>
+
+                    <!-- 文章2：EC钻石绿宝石时间表 -->
+                    <article id="article2"
+                        class="article-content bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transform transition-all hover:shadow-lg">
+                        <div class="flex items-center mb-4">
+                            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-4">
+                                <i class="fa-solid fa-bullseye text-primary"></i>
+                            </div>
+                            <h2 class="text-2xl font-bold text-gray-800 dark:text-light">EC钻石绿宝石时间表</h2>
+                            <!-- 添加切换按钮 -->
+                            <button id="toggle-schedule" class="ml-4">
+                                <img src="emerald.png" alt="切换时间表" class="h-6 w-6">
+                            </button>
+                        </div>
+                        <div class="prose max-w-none">
+                            <div class="overflow-x-auto">
+                                <!-- 绿宝石时间表 -->
+                                <div id="emerald-schedule">
+                                    <p class="text-gray-600 dark:text-gray-300 mb-6">
+                                        本表格展示了游戏中绿宝石的刷新时间规律，从钻石点2级6:00开始整局游戏。</p>
+                                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                        <thead class="bg-gray-50 dark:bg-gray-800">
+                                            <tr>
+                                                <th scope="col"
+                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                    序号</th>
+                                                <th scope="col"
+                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                    时间</th>
+                                                <th scope="col"
+                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                    说明</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody
+                                            class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                            <tr class="level-1">
+                                                <td class="px-6 py-4 whitespace-nowrap">1</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">6:00</td>
+                                                <td class="px-6 py-4">绿宝石1级刷新（55秒间隔）</td>
+                                            </tr>
+                                            <tr class="level-1">
+                                                <td class="px-6 py-4 whitespace-nowrap">2</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">5:05</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="level-1">
+                                                <td class="px-6 py-4 whitespace-nowrap">3</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">4:10</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="level-1">
+                                                <td class="px-6 py-4 whitespace-nowrap">4</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">3:15</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="level-1">
+                                                <td class="px-6 py-4 whitespace-nowrap">5</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">2:20</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="level-1">
+                                                <td class="px-6 py-4 whitespace-nowrap">6</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">1:25</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="level-1">
+                                                <td class="px-6 py-4 whitespace-nowrap">7</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">0:30</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="level-2">
+                                                <td class="px-6 py-4 whitespace-nowrap">8</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">5:35</td>
+                                                <td class="px-6 py-4">绿宝石2级倒计时（40秒间隔）</td>
+                                            </tr>
+                                            <tr class="level-2">
+                                                <td class="px-6 py-4 whitespace-nowrap">9</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">4:40</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="level-2">
+                                                <td class="px-6 py-4 whitespace-nowrap">10</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">3:45</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="level-2">
+                                                <td class="px-6 py-4 whitespace-nowrap">11</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">2:50</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="level-2">
+                                                <td class="px-6 py-4 whitespace-nowrap">12</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">1:55</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="level-2">
+                                                <td class="px-6 py-4 whitespace-nowrap">13</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">1:00</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="level-2">
+                                                <td class="px-6 py-4 whitespace-nowrap">14</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">0:05</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">15</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">5:10</td>
+                                                <td class="px-6 py-4">钻石3级倒计时（30秒间隔）</td>
+                                            </tr>
+                                            <tr class="level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">16</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">4:30</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">17</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">3:50</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">18</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">3:10</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">19</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">2:30</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">20</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">1:50</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">21</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">1:10</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">22</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">0:30</td>
+                                                <td class="px-6 py-4">绿宝石3级倒计时</td>
+                                            </tr>
+                                            <tr class="level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">23</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">5:50</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">24</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">5:10</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">25</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">4:30</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">26</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">3:50</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">27</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">3:10</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">28</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">2:30</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">29</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">1:50</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">30</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">1:10</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">31</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">0:30</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">32</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">5:50</td>
+                                                <td class="px-6 py-4">床自毁倒计时</td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">33</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">5:30</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">34</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">5:00</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">35</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">4:30</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">36</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">4:00</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">37</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">3:30</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">38</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">3:00</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">39</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">2:30</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">40</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">2:00</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">41</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">1:30</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">42</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">1:00</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">43</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">0:30</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">44</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">6:00</td>
+                                                <td class="px-6 py-4">末影龙出没</td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">45</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">5:30</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">46</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">5:00</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">47</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">4:30</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">48</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">4:00</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">49</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">3:30</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">50</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">3:00</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">51</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">2:30</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">52</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">2:00</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">53</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">1:30</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">54</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">1:00</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">55</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">0:30</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- 钻石时间表 -->
+                                <div id="diamond-schedule" class="hidden">
+                                    <p class="text-gray-600 dark:text-gray-300 mb-6">
+                                        本表格展示了游戏中钻石的刷新时间规律，从钻石点2级6:00开始整局游戏。</p>
+                                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                        <thead class="bg-gray-50 dark:bg-gray-800">
+                                            <tr>
+                                                <th scope="col"
+                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                    序号</th>
+                                                <th scope="col"
+                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                    时间</th>
+                                                <th scope="col"
+                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                    说明</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody
+                                            class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                            <tr class="diamond-level-1">
+                                                <td class="px-6 py-4 whitespace-nowrap">1</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">6:00</td>
+                                                <td class="px-6 py-4">钻石1级生成（30秒间隔）</td>
+                                            </tr>
+                                            <tr class="diamond-level-1">
+                                                <td class="px-6 py-4 whitespace-nowrap">2</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">5:30</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-1">
+                                                <td class="px-6 py-4 whitespace-nowrap">3</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">5:00</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-1">
+                                                <td class="px-6 py-4 whitespace-nowrap">4</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">4:30</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-1">
+                                                <td class="px-6 py-4 whitespace-nowrap">5</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">4:00</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-1">
+                                                <td class="px-6 py-4 whitespace-nowrap">6</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">3:30</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-1">
+                                                <td class="px-6 py-4 whitespace-nowrap">7</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">3:00</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-1">
+                                                <td class="px-6 py-4 whitespace-nowrap">8</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">2:30</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-1">
+                                                <td class="px-6 py-4 whitespace-nowrap">9</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">2:00</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-1">
+                                                <td class="px-6 py-4 whitespace-nowrap">10</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">1:30</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-1">
+                                                <td class="px-6 py-4 whitespace-nowrap">11</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">1:00</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-1">
+                                                <td class="px-6 py-4 whitespace-nowrap">12</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">0:30</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-2">
+                                                <td class="px-6 py-4 whitespace-nowrap">13</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">6:00</td>
+                                                <td class="px-6 py-4">钻石2级生成（23秒间隔）/绿宝石2级倒计时开始</td>
+                                            </tr>
+                                            <tr class="diamond-level-2">
+                                                <td class="px-6 py-4 whitespace-nowrap">14</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">5:37</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-2">
+                                                <td class="px-6 py-4 whitespace-nowrap">15</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">5:14</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-2">
+                                                <td class="px-6 py-4 whitespace-nowrap">16</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">4:51</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-2">
+                                                <td class="px-6 py-4 whitespace-nowrap">17</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">4:28</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-2">
+                                                <td class="px-6 py-4 whitespace-nowrap">18</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">4:05</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-2">
+                                                <td class="px-6 py-4 whitespace-nowrap">19</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">3:42</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-2">
+                                                <td class="px-6 py-4 whitespace-nowrap">20</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">3:19</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-2">
+                                                <td class="px-6 py-4 whitespace-nowrap">21</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">2:56</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-2">
+                                                <td class="px-6 py-4 whitespace-nowrap">22</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">2:33</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-2">
+                                                <td class="px-6 py-4 whitespace-nowrap">23</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">2:10</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-2">
+                                                <td class="px-6 py-4 whitespace-nowrap">24</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">1:47</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-2">
+                                                <td class="px-6 py-4 whitespace-nowrap">25</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">1:24</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-2">
+                                                <td class="px-6 py-4 whitespace-nowrap">26</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">1:01</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-2">
+                                                <td class="px-6 py-4 whitespace-nowrap">27</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">0:38</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-2">
+                                                <td class="px-6 py-4 whitespace-nowrap">28</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">0:15</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">29</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">5:52</td>
+                                                <td class="px-6 py-4">钻石3级生成（15秒间隔）</td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">30</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">5:29</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">31</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">5:06</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">32</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">4:43</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">33</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">4:20</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">34</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">3:57</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">35</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">3:34</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">36</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">3:11</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">37</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">2:48</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">38</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">2:25</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">39</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">2:02</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">40</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">1:39</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">41</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">1:16</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">42</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">0:53</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">43</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">0:30</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">44</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">0:07</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">45</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">5:44</td>
+                                                <td class="px-6 py-4">绿宝石3级倒计时开始</td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">46</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">5:29</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">47</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">5:14</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">48</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">4:59</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">49</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">4:44</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">50</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">4:29</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">51</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">4:14</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">52</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">3:59</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">53</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">3:44</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">54</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">3:29</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">55</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">3:14</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">56</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">2:59</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">57</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">2:44</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">58</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">2:29</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">59</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">2:14</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">60</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">1:59</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">61</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">1:44</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">62</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">1:29</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">63</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">1:14</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">64</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">0:59</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">65</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">0:29</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="diamond-level-3">
+                                                <td class="px-6 py-4 whitespace-nowrap">66</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">0:14</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">67</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">5:59</td>
+                                                <td class="px-6 py-4">床自毁倒计时</td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">68</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">5:44</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">69</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">5:29</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">70</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">5:14</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">71</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">4:59</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">72</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">4:44</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">73</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">4:29</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">74</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">4:14</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">75</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">3:59</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">76</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">3:44</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">77</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">3:29</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">78</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">3:14</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">79</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">2:59</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">80</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">2:44</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">81</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">2:29</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">82</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">2:14</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">83</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">1:59</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">84</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">1:44</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">85</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">1:29</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">86</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">1:14</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">87</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">0:59</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">88</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">0:44</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">89</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">0:29</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="bed-destroy">
+                                                <td class="px-6 py-4 whitespace-nowrap">90</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">0:14</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">91</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">5:59</td>
+                                                <td class="px-6 py-4">末影龙出没</td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">92</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">5:44</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">93</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">5:29</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">94</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">5:14</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">95</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">4:59</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">96</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">4:44</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">97</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">4:29</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">98</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">4:14</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">99</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">3:59</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">100</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">3:44</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">101</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">3:29</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">102</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">3:14</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">103</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">2:59</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">104</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">2:44</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">105</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">2:29</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">106</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">2:14</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">107</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">1:59</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">108</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">1:44</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">109</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">1:29</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">110</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">1:14</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">111</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">0:59</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">112</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">0:44</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">113</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">0:29</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                            <tr class="ender-dragon">
+                                                <td class="px-6 py-4 whitespace-nowrap">114</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">0:14</td>
+                                                <td class="px-6 py-4"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+
+                            </div>
+
+                            <div class="mt-6 bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg">
+                                <div class="flex">
+                                    <div class="flex-shrink-0">
+                                        <i class="fa-solid fa-info-circle text-blue-500"></i>
+                                    </div>
+                                    <div class="ml-3">
+                                        <p class="text-sm text-blue-700">
+                                            <strong>提示：</strong> 表格中不同颜色的行表示不同的刷新阶段，方便您快速识别和记忆。
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- 文章3：EC伤害表 -->
+                    <article id="article3"
+                        class="article-content bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transform transition-all hover:shadow-lg">
+                        <div class="flex items-center mb-4">
+                            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-4">
+                                <i class="fa-solid fa-rocket text-primary"></i>
+                            </div>
+                            <h2 class="text-2xl font-bold text-gray-800 dark:text-light">EC伤害表</h2>
+                        </div>
+                        <div class="prose max-w-none">
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">aaabbbccc</p>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">aaabbbccc</p>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">aaabbbccc</p>
+                        </div>
+                    </article>
+
+                    <!-- 文章4：EC守家论 -->
+                    <article id="article4"
+                        class="article-content bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transform transition-all hover:shadow-lg">
+                        <div class="flex items-center mb-4">
+                            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-4">
+                                <i class="fa-solid fa-question-circle text-primary"></i>
+                            </div>
+                            <h2 class="text-2xl font-bold text-gray-800 dark:text-light">EC守家论</h2>
+                        </div>
+                        <div class="prose max-w-none">
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                在《起床战争》(Bed
+                                Wars)这款游戏中，床是每个队伍的核心资源，它具有两个关键功能：一是作为队伍的出生点，二是为队员提供无限次数的复活机会。当床被摧毁时，该队伍的所有成员将无法再次重生，这通常意味着队伍将大大失去容错率。因此，保护床不被敌人破坏成为游戏中的重要战略目标。
+                            </p>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                但是床很脆弱，只需要很短的时间就能挖开，并且不可移动，所以我们一方面可以通过建造防御工事来阻挠敌人，一方面我们人本身也需要阻止敌人去挖家。
+                            </p>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                两者中在床的防守中，人的主动性比任何防御建筑都更为关键。虽然建造防御工事可以延缓敌人拆床的速度，但最终决定床安危的还是玩家的战斗技巧、位置选择和战术决策。一个优秀的防守者应该能够利用有限的资源和技能，在关键时刻保护床不被摧毁。没有人的作用力，防御工事就会被很轻松的挖开。所以人的作用在守家中是第一性的，防御工事的建造，挖掘疲劳陷阱一类都是次要的，都是辅助人来守家的，这是目前很多所谓的守家视频所缺失的一点。(因而意识很难教导，只有一般性的规律可以提供，在具体的对局里必须具体情况具体分析)
+                            </p>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                虽然床的存续确实至关重要，但将其视为唯一决定胜负的因素是片面的，单一的认为守家的是与否是绝对错误的，实战变化复杂多样，我们只能具体问题具体分析。成功的游戏策略应该平衡床的保护、资源的收集、团队的配合能力以及进攻的时机，在资源收集层面，例如游戏中期，敌人可能已经通过进攻占领了更多资源点，取得了更大的优势，此时我们的重心还能放在保卫自己的一亩三分地上吗？肯定是不行的，我们必须扩展更多的发育机会，进攻扰乱敌人的节奏。又或者在团队配合层面，在ec服务器野排时的配合度是很低的，很少能称得上“团队”，在这种情况时，队友是不确定因素，我们不能靠赌博的心态去尽力完成一把起床战争，根据十几位的高玩上千场的游戏经验，野排队友不可靠的。此时我们的重心必须保证到自身的发育和时机上来，把自己单体实力提升上来，然后抓住进攻时机拿下胜利。这时候还想着团队无异于跟3个石头打配合。此时守家的边际效应甚至只有在一开局才能为我们提供收益，例如大神玩家开局会铺一层羊毛保证前期的存活率，而在接下来造成资源优势保证存活率和击溃敌人。还有的异类打法甚至不需要家，在初期购买TNT造成伤害碾压，放弃床在前期造成伤害最大化。消灭自己保存自己是一切战斗的本质和基本目的，其实质是最大限度地歼灭敌人有生力量，尽可能地减少己方损失，以最小的代价换取最大的胜利。过分依赖防守而忽视其他方面的发展，会导致游戏资源匮乏，错失进攻时机，陷入被动局面，实质是保守主义泛滥，畏手畏脚最后是打也打不出去，守也守不住，无论是进攻还是防御，都必须以消灭敌人有生力量为主，守家的意义就是保证你的发育和进攻。当玩家投入越来越多资源强化防御时，边际效益会逐渐递减——也就是花费更多时间和资源建造更复杂的防御工事，一般只能获得有限的收益。这时候，将这些资源用于进攻或团队发展可能会带来更大的收益。
+                            </p>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                （上述都可以归结为守家的意义）
+                            </p>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                那么，在团队中担任守家位时，我们应该做哪些呢？最基础的肯定是建造防御工事，在防御工事中我们必须综合考虑，可以参考UP主“曜日之后”的视频，他对防御工事有一套评分标准：blockin抗性，爆炸抗性，水流抗性，修补难易度。（虽然不知道他的分数依据从哪来，等待后续修订吧）而在ec里与布吉岛情况有所不同【做曜日之后同款测评】。然后阐述人在守家是应该做什么。
+                            </p>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                我们可以分为三种策略，第一种为“最简单的床”不需要分配人力或者分配一个人力，第二中为“万金油床”分配一个人力，第三种“综合性最高的床”分配一到两个人力，那么如何抉择不同策略呢？孙子指出“知己知彼百战不殆；不彼而知己，一胜一负；不知彼不知己，每战必殆”要掌握主动权和实施灵活的策略，就必须掌握敌情，我们一般以敌人的综合实力包括但不限于敌方装备水平，敌方团队配合能力，敌方pvp实力来参考：在面对较菜的敌人时，我们采用第一种策略，若有时我们实在不得而知敌人的情况或者比较中性的情况，则采用第二种策略，面对遇到大车时，则采用第三套策略。
+                            </p>
+                        </div>
+                    </article>
+
+                    <!-- 文章5：我不知道 -->
+                    <article id="article5"
+                        class="article-content bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transform transition-all hover:shadow-lg">
+                        <div class="flex items-center mb-4">
+                            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-4">
+                                <i class="fa-solid fa-plug text-primary"></i>
+                            </div>
+                            <h2 class="text-2xl font-bold text-gray-800 dark:text-light">我不知道</h2>
+                        </div>
+                        <div class="prose max-w-none">
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                在《起床战争》(Bed
+                                Wars)这款游戏中，床是每个队伍的核心资源，它具有两个关键功能：一是作为队伍的出生点，二是为队员提供无限次数的复活机会。当床被摧毁时，该队伍的所有成员将无法再次重生，这通常意味着队伍将大大失去容错率。因此，保护床不被敌人破坏成为游戏中的重要战略目标。
+                            </p>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                但是床很脆弱，只需要很短的时间就能挖开，并且不可移动，所以我们一方面可以通过建造防御工事来阻挠敌人，一方面我们人本身也需要阻止敌人去挖家。
+                            </p>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                两者中在床的防守中，人的主动性比任何防御建筑都更为关键。虽然建造防御工事可以延缓敌人拆床的速度，但最终决定床安危的还是玩家的战斗技巧、位置选择和战术决策。一个优秀的防守者应该能够利用有限的资源和技能，在关键时刻保护床不被摧毁。没有人的作用力，防御工事就会被很轻松的挖开。所以人的作用在守家中是第一性的，防御工事的建造，挖掘疲劳陷阱一类都是次要的，都是辅助人来守家的，这是目前很多所谓的守家视频所缺失的一点。(因而意识很难教导，只有一般性的规律可以提供，在具体的对局里必须具体情况具体分析)
+                            </p>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                虽然床的存续确实至关重要，但将其视为唯一决定胜负的因素是片面的，单一的认为守家的是与否是绝对错误的，实战变化复杂多样，我们只能具体问题具体分析。成功的游戏策略应该平衡床的保护、资源的收集、团队的配合能力以及进攻的时机，在资源收集层面，例如游戏中期，敌人可能已经通过进攻占领了更多资源点，取得了更大的优势，此时我们的重心还能放在保卫自己的一亩三分地上吗？肯定是不行的，我们必须扩展更多的发育机会，进攻扰乱敌人的节奏。又或者在团队配合层面，在ec服务器野排时的配合度是很低的，很少能称得上“团队”，在这种情况时，队友是不确定因素，我们不能靠赌博的心态去尽力完成一把起床战争，根据十几位的高玩上千场的游戏经验，野排队友不可靠的。此时我们的重心必须保证到自身的发育和时机上来，把自己单体实力提升上来，然后抓住进攻时机拿下胜利。这时候还想着团队无异于跟3个石头打配合。此时守家的边际效应甚至只有在一开局才能为我们提供收益，例如大神玩家开局会铺一层羊毛保证前期的存活率，而在接下来造成资源优势保证存活率和击溃敌人。还有的异类打法甚至不需要家，在初期购买TNT造成伤害碾压，放弃床在前期造成伤害最大化。消灭自己保存自己是一切战斗的本质和基本目的，其实质是最大限度地歼灭敌人有生力量，尽可能地减少己方损失，以最小的代价换取最大的胜利。过分依赖防守而忽视其他方面的发展，会导致游戏资源匮乏，错失进攻时机，陷入被动局面，实质是保守主义泛滥，畏手畏脚最后是打也打不出去，守也守不住，无论是进攻还是防御，都必须以消灭敌人有生力量为主，守家的意义就是保证你的发育和进攻。当玩家投入越来越多资源强化防御时，边际效益会逐渐递减——也就是花费更多时间和资源建造更复杂的防御工事，一般只能获得有限的收益。这时候，将这些资源用于进攻或团队发展可能会带来更大的收益。
+                            </p>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                （上述都可以归结为守家的意义）
+                            </p>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                那么，在团队中担任守家位时，我们应该做哪些呢？最基础的肯定是建造防御工事，在防御工事中我们必须综合考虑，可以参考UP主“曜日之后”的视频，他对防御工事有一套评分标准：blockin抗性，爆炸抗性，水流抗性，修补难易度。（虽然不知道他的分数依据从哪来，等待后续修订吧）而在ec里与布吉岛情况有所不同【做曜日之后同款测评】。然后阐述人在守家是应该做什么。
+                            </p>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                我们可以分为三种策略，第一种为“最简单的床”不需要分配人力或者分配一个人力，第二中为“万金油床”分配一个人力，第三种“综合性最高的床”分配一到两个人力，那么如何抉择不同策略呢？孙子指出“知己知彼百战不殆；不彼而知己，一胜一负；不知彼不知己，每战必殆”要掌握主动权和实施灵活的策略，就必须掌握敌情，我们一般以敌人的综合实力包括但不限于敌方装备水平，敌方团队配合能力，敌方pvp实力来参考：在面对较菜的敌人时，我们采用第一种策略，若有时我们实在不得而知敌人的情况或者比较中性的情况，则采用第二种策略，面对遇到大车时，则采用第三套策略。
+                            </p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- 页脚 -->
+            <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-6 mt-auto">
+                <div class="container mx-auto px-4">
+                    <div class="flex flex-col md:flex-row justify-between items-center">
+                        <div class="text-gray-500 dark:text-gray-400 text-sm mb-4 md:mb-0">
+                            © 2025 EaseCation 火焰弹教学网站. 保留所有权利.
+                        </div>
+                        <div class="flex space-x-6">
+                            <a href="#" class="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">
+                                <i class="fa-brands fa-github"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        // 侧边栏切换
+        document.getElementById('menu-toggle').addEventListener('click', function () {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.querySelector('main');
+
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                mainContent.classList.remove('md:ml-64');
+                mainContent.classList.add('md:ml-0');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                mainContent.classList.remove('md:ml-0');
+                mainContent.classList.add('md:ml-64');
+            }
+        });
+
+        // 目录点击切换文章
+        document.querySelectorAll('#sidebar a').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                // 移除所有活跃状态
+                document.querySelectorAll('#sidebar a').forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                // 添加当前活跃状态
+                this.classList.add('active');
+
+                // 隐藏所有文章
+                document.querySelectorAll('.article-content').forEach(article => {
+                    article.classList.remove('active');
+                });
+
+                // 显示对应文章
+                const articleId = this.getAttribute('data-article');
+                document.getElementById(articleId).classList.add('active');
+
+                // 在移动设备上点击后关闭侧边栏
+                if (window.innerWidth < 768) {
+                    document.getElementById('sidebar').classList.add('-translate-x-full');
+                    document.querySelector('main').classList.remove('md:ml-0');
+                    document.querySelector('main').classList.add('md:ml-64');
+                }
+            });
+        });
+
+        // 主题切换
+        const themeToggle = document.getElementById('theme-toggle');
+        const icon = themeToggle.querySelector('i');
+
+        // 检查本地存储中的主题偏好
+        if (localStorage.getItem('theme') === 'dark' ||
+            (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            icon.classList.remove('fa-moon');
+            icon.classList.add('fa-sun');
+        } else {
+            document.documentElement.classList.remove('dark');
+            icon.classList.remove('fa-sun');
+            icon.classList.add('fa-moon');
+        }
+
+        themeToggle.addEventListener('click', function () {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            }
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // 滚动时调整导航栏样式
+        window.addEventListener('scroll', function () {
+            const header = document.querySelector('header');
+            if (window.scrollY > 10) {
+                header.classList.add('shadow-lg');
+                header.classList.remove('shadow-md');
+            } else {
+                header.classList.remove('shadow-lg');
+                header.classList.add('shadow-md');
+            }
+        });
+        // 切换时间表逻辑
+        const toggleButton = document.getElementById('toggle-schedule');
+        const emeraldSchedule = document.getElementById('emerald-schedule');
+        const diamondSchedule = document.getElementById('diamond-schedule');
+        const buttonImage = toggleButton.querySelector('img');
+
+        toggleButton.addEventListener('click', function () {
+            if (emeraldSchedule.classList.contains('hidden')) {
+                emeraldSchedule.classList.remove('hidden');
+                diamondSchedule.classList.add('hidden');
+                buttonImage.src = 'emerald.png';
+            } else {
+                emeraldSchedule.classList.add('hidden');
+                diamondSchedule.classList.remove('hidden');
+                buttonImage.src = 'diamond.png';
+            }
+        });
+
+    </script>
+</body>
+
+</html>
