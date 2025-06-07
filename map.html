@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EaseCation 全地图信息</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#E53E3E', // 火焰红色作为主色调
+                        secondary: '#3182CE', // 辅助蓝色
+                        accent: '#ED8936', // 强调橙色
+                        dark: '#1A202C',
+                        light: '#F7FAFC'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .scrollbar-hide {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+            .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+            }
+            .thumbnail-active {
+                @apply ring-2 ring-primary ring-offset-2;
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .text-shadow-lg {
+                text-shadow: 0 4px 8px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.08);
+            }
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+            .gradient-mask {
+                mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+                -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-white h-screen flex flex-col">
+    <!-- 顶部导航栏 -->
+    <header class="bg-white shadow-md py-4 px-6 flex items-center justify-between relative overflow-hidden">
+        <!-- 装饰性红色渐变背景 -->
+        <div class="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent opacity-30"></div>
+
+        <h1 class="text-2xl md:text-2xl font-bold text-primary flex items-center relative z-10 text-shadow-lg">
+            <i class="fa fa-map-o mr-3"></i>
+            <span class="tracking-wide">EaseCation 全地图信息</span>
+        </h1>
+    </header>
+
+    <!-- 主内容区域 -->
+    <main class="flex-1 flex overflow-hidden">
+        <!-- 侧边栏 - 缩略图列表 -->
+        <aside
+            class="w-64 bg-white border-r border-gray-200 flex flex-col transition-all duration-300 ease-in-out overflow-hidden shadow-lg">
+            <!-- 修改此处背景样式为白色 -->
+            <div class="p-4 border-b border-gray-200 bg-white relative overflow-hidden">
+                <!-- 装饰性元素 -->
+
+                <h2 class="text-lg font-semibold text-dark relative z-10 flex items-center">
+                    <i class="fa fa-folder-open-o text-primary mr-2"></i>
+                    maps 文件夹
+                </h2>
+                <p class="text-sm text-gray-600 mt-1">共 <span id="total-images">0</span> 张图片</p>
+            </div>
+
+            <div class="relative flex-1 overflow-y-auto scrollbar-hide p-2">
+                <div id="thumbnails-container" class="grid grid-cols-2 gap-2"></div>
+
+                <!-- 加载状态 -->
+                <div id="loading-thumbnails"
+                    class="absolute inset-0 flex items-center justify-center bg-white bg-opacity-80 z-10 hidden">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 主视图 - 大图展示区域 -->
+        <section class="flex-1 flex flex-col bg-gray-50">
+            <div class="p-4 bg-white shadow-sm flex items-center justify-between relative">
+                <h2 id="current-image-title" class="text-lg font-semibold text-dark">未选择图片</h2>
+                <div class="flex items-center space-x-2">
+                    <button id="prev-btn"
+                        class="p-2 rounded-full hover:bg-gray-100 text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        disabled>
+                        <i class="fa fa-chevron-left"></i>
+                    </button>
+                    <button id="next-btn"
+                        class="p-2 rounded-full hover:bg-gray-100 text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        disabled>
+                        <i class="fa fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex-1 flex items-center justify-center p-4 relative">
+                <!-- 大图展示区域 -->
+                <div id="image-container"
+                    class="max-w-full max-h-full overflow-hidden bg-white shadow-xl rounded-lg p-2 transform transition-all duration-300 hover:shadow-2xl">
+                    <img id="main-image" src="https://picsum.photos/800/600" alt="默认图片"
+                        class="max-w-full max-h-[80vh] object-contain">
+                </div>
+
+                <!-- 图片加载状态 -->
+                <div id="loading-image"
+                    class="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-80 z-10 hidden">
+                    <div class="flex flex-col items-center">
+                        <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-primary"></div>
+                        <p class="mt-4 text-gray-600">正在加载图片...</p>
+                    </div>
+                </div>
+
+                <!-- 空状态 - 已移除提示文本 -->
+                <div id="empty-state" class="hidden flex-col items-center justify-center text-gray-400">
+                    <div class="text-6xl mb-4">
+                        <i class="fa fa-picture-o"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 图片信息区 -->
+            <div class="bg-white p-4 border-t border-gray-200 shadow-inner">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500">图片路径：<span id="image-path"
+                                class="text-gray-700">maps/default.png</span></p>
+                        <p class="text-sm text-gray-500 mt-1">图片尺寸：<span id="image-dimensions" class="text-gray-700">800
+                                × 600</span></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // 模拟图片数据
+        const imageFiles = [
+            { name: '沙樱', url: 'maps/a.png', thumbnail: 'maps/a.png', path: 'maps/a.png' },
+            { name: 'b.png', url: 'https://picsum.photos/id/1016/800/600', thumbnail: 'https://picsum.photos/id/1016/150/150', path: 'maps/b.png' },
+            { name: 'c.png', url: 'https://picsum.photos/id/1018/800/600', thumbnail: 'https://picsum.photos/id/1018/150/150', path: 'maps/c.png' },
+            { name: 'd.png', url: 'https://picsum.photos/id/1019/800/600', thumbnail: 'https://picsum.photos/id/1019/150/150', path: 'maps/d.png' },
+            { name: 'e.png', url: 'https://picsum.photos/id/1021/800/600', thumbnail: 'https://picsum.photos/id/1021/150/150', path: 'maps/e.png' },
+            { name: 'f.png', url: 'https://picsum.photos/id/1023/800/600', thumbnail: 'https://picsum.photos/id/1023/150/150', path: 'maps/f.png' },
+            { name: 'g.png', url: 'https://picsum.photos/id/1024/800/600', thumbnail: 'https://picsum.photos/id/1024/150/150', path: 'maps/g.png' },
+            { name: 'h.png', url: 'https://picsum.photos/id/1025/800/600', thumbnail: 'https://picsum.photos/id/1025/150/150', path: 'maps/h.png' },
+            { name: 'i.png', url: 'https://picsum.photos/id/1028/800/600', thumbnail: 'https://picsum.photos/id/1028/150/150', path: 'maps/i.png' },
+            { name: 'j.png', url: 'https://picsum.photos/id/1036/800/600', thumbnail: 'https://picsum.photos/id/1036/150/150', path: 'maps/j.png' },
+            { name: 'k.png', url: 'https://picsum.photos/id/1039/800/600', thumbnail: 'https://picsum.photos/id/1039/150/150', path: 'maps/k.png' },
+            { name: 'l.png', url: 'https://picsum.photos/id/1040/800/600', thumbnail: 'https://picsum.photos/id/1040/150/150', path: 'maps/l.png' },
+        ];
+
+        // DOM 元素
+        const thumbnailsContainer = document.getElementById('thumbnails-container');
+        const mainImage = document.getElementById('main-image');
+        const currentImageTitle = document.getElementById('current-image-title');
+        const imagePath = document.getElementById('image-path');
+        const imageDimensions = document.getElementById('image-dimensions');
+        const loadingImage = document.getElementById('loading-image');
+        const loadingThumbnails = document.getElementById('loading-thumbnails');
+        const emptyState = document.getElementById('empty-state');
+        const totalImages = document.getElementById('total-images');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+
+        // 当前选中的图片索引
+        let currentImageIndex = -1;
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            // 显示加载状态
+            loadingThumbnails.classList.remove('hidden');
+
+            // 模拟异步加载图片
+            setTimeout(() => {
+                renderThumbnails();
+                loadingThumbnails.classList.add('hidden');
+                totalImages.textContent = imageFiles.length;
+
+                // 默认选择第一张图片
+                if (imageFiles.length > 0) {
+                    selectImage(0);
+                }
+            }, 800);
+
+            // 绑定事件
+            prevBtn.addEventListener('click', showPreviousImage);
+            nextBtn.addEventListener('click', showNextImage);
+        });
+
+        // 渲染缩略图
+        function renderThumbnails() {
+            thumbnailsContainer.innerHTML = '';
+
+            imageFiles.forEach((image, index) => {
+                const thumbnail = document.createElement('div');
+                thumbnail.className = 'group cursor-pointer rounded-lg overflow-hidden card-hover';
+                thumbnail.dataset.index = index;
+
+                thumbnail.innerHTML = `
+                    <div class="relative">
+                        <img src="${image.thumbnail}" alt="${image.name}" class="w-full aspect-square object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3">
+                            <p class="text-white text-sm font-medium truncate">${image.name}</p>
+                        </div>
+                    </div>
+                `;
+
+                thumbnail.addEventListener('click', () => selectImage(index));
+                thumbnailsContainer.appendChild(thumbnail);
+            });
+        }
+
+        // 选择图片
+        function selectImage(index) {
+            // 移除之前选中的缩略图高亮
+            const prevActive = document.querySelector('.thumbnail-active');
+            if (prevActive) prevActive.classList.remove('thumbnail-active');
+
+            // 添加新的高亮
+            const thumbnail = thumbnailsContainer.querySelector(`[data-index="${index}"]`);
+            if (thumbnail) thumbnail.classList.add('thumbnail-active');
+
+            // 更新当前图片索引
+            currentImageIndex = index;
+
+            // 显示加载状态
+            loadingImage.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+
+            // 模拟图片加载
+            setTimeout(() => {
+                const image = imageFiles[index];
+                mainImage.src = image.url;
+                mainImage.alt = image.name;
+                currentImageTitle.textContent = image.name;
+                imagePath.textContent = image.path;
+
+                // 图片加载完成后获取尺寸
+                mainImage.onload = function () {
+                    imageDimensions.textContent = `${this.naturalWidth} × ${this.naturalHeight}`;
+                    loadingImage.classList.add('hidden');
+                };
+
+                // 更新导航按钮状态
+                updateNavigationButtons();
+            }, 300);
+        }
+
+        // 显示上一张图片
+        function showPreviousImage() {
+            if (currentImageIndex > 0) {
+                selectImage(currentImageIndex - 1);
+            }
+        }
+
+        // 显示下一张图片
+        function showNextImage() {
+            if (currentImageIndex < imageFiles.length - 1) {
+                selectImage(currentImageIndex + 1);
+            }
+        }
+
+        // 更新导航按钮状态
+        function updateNavigationButtons() {
+            prevBtn.disabled = currentImageIndex <= 0;
+            nextBtn.disabled = currentImageIndex >= imageFiles.length - 1;
+        }
+
+        // 响应式处理
+        window.addEventListener('resize', () => {
+            // 可以在这里添加图片大小调整逻辑
+        });
+    </script>
+</body>
+
+</html>
